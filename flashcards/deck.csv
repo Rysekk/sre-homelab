@@ -1,2 +1,0 @@
-question;réponse
-exit code 137 = quel signal et pourquoi ?;SIGKILL (137 = 128 + 9), envoyé par l OOM killer du kernel quand le cgroup dépasse memory.max

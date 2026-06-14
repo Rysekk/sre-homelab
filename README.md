@@ -12,8 +12,8 @@ Related project: [lgtm-helm-chart](https://github.com/Rysekk/lgtm-helm-chart) �
 
 | # | Mission | Topic | Status |
 |---|---------|-------|--------|
-| 1 | Le pod qui meurt en silence | Linux — OOM, cgroups | 🔧 |
-| 2 | Rapide mais lent | Linux — CPU throttling, CFS | ⬜ |
+| 1 | Le pod qui meurt en silence | Linux — OOM, cgroups | ✅ |
+| 2 | Rapide mais lent | Linux — CPU throttling, CFS | 🔧 |
 | 3 | Le serveur mystère | Linux — USE method, I/O | ⬜ |
 | 4 | Tout le monde timeout | Network — DNS, NetworkPolicy | ⬜ |
 | 5 | L'autopsie des connexions | Network — TCP states | ⬜ |
@@ -30,6 +30,3 @@ Legend: ✅ done · 🔧 in progress · ⬜ not started
 
 - `missions/` — one folder per mission: investigation notes, interview answers, key command outputs
 - `post-mortems/` — incident write-ups in professional format
-- `cheatsheets/` — one-page syntheses per topic, written after each week
-- `flashcards/` — Anki-ready deck (CSV), reviewed 10 min daily
-- `setup/` — cluster installation and configuration
