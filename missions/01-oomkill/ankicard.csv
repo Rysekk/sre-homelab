@@ -1,0 +1,11 @@
+question;réponse
+Exit code 137 : quel signal, et quel calcul ?;128 + 9 = SIGKILL. Le process a été tué par SIGKILL, pas "mémoire dépassée" (c'est la cause la plus fréquente mais pas la seule : delete forcé, eviction donnent aussi 137).
+Exit code 143 : quel signal ?;128 + 15 = SIGTERM. Arrêt poli (rolling update, kubectl delete normal). Le process peut l'intercepter pour faire du cleanup.
+Pourquoi l'OOM killer utilise SIGKILL et pas SIGTERM ?;SIGKILL ne peut être ni intercepté ni ignoré. Quand le kernel doit libérer de la mémoire pour survivre, il ne peut pas attendre qu'un handler veuille bien s'exécuter.
+Qui tue un process qui dépasse sa limite mémoire ?;L'OOM killer du kernel Linux (pas Kubernetes). Kubelet ne fait que constater la mort et appliquer la restartPolicy.
+Où lire la trace d'un OOM kill ?;dmesg (journal du kernel), accessible depuis l'hôte. Pas dans kubectl describe, qui montre seulement le symptôme OOMKilled.
+Une limite mémoire K8s, c'est quoi côté Linux ?;Le fichier memory.max du cgroup (cgroup v2), en octets. Le cgroup comptabilise la conso et impose le plafond ; il ne réserve rien.
+cgroups vs namespaces ?;cgroups = limiter/compter les ressources (CPU, mémoire). namespaces = isoler la visibilité (PID, réseau, mount). Un conteneur = process Linux + namespaces + cgroups.
+Pod à 80Mi RSS, limite 100Mi, tué quand même : 3 hypothèses ?;(1) Pression mémoire globale du node, OOM killer global selon oom_score. (2) Le cgroup compte le page cache + tmpfs, pas que le RSS. (3) Process enfant oublié dans le conteneur.
+Un conteneur, c'est quoi pour un interviewer senior ?;Un process Linux normal, isolé par des namespaces et contraint par des cgroups, qui partage le kernel de l'hôte. Pas une VM.
+requests vs limits (mémoire) ?;requests = ce que le scheduler réserve pour placer le pod. limits = le plafond d'exécution (cgroup memory.max). Deux mécanismes distincts.

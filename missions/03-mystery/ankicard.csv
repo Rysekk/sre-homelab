@@ -1,0 +1,12 @@
+question;réponse
+Que compte réellement le load average ?;Le nombre moyen de process runnable (veulent le CPU) OU en attente ininterruptible (D-state, bloqués sur I/O). PAS l'occupation CPU en %.
+Load à 12 sur 8 cœurs avec CPU idle 70% : explication ?;Les process attendent autre chose que le CPU (sinon il ne serait pas idle). Suspect n°1 : I/O. Soit I/O disque directe, soit swap (manque de RAM), soit attente réseau (NFS gelé). Load > nb cœurs = saturation.
+Load élevé + CPU idle = quel mécanisme fait monter le load ?;Les process en D-state : vivants mais bloqués sur une I/O qui ne revient pas. Ils comptent dans le load SANS consommer de CPU. C'est ça qui crée le paradoxe.
+C'est quoi un process en D-state ?;Uninterruptible sleep : process bloqué en attente d'une I/O (disque lent, NFS gelé...). Ne peut pas être interrompu, compte dans le load, ne consomme aucun CPU.
+Piège : load élevé + RAM pleine, est-ce un OOMKill ?;NON. L'OOMKill tue un process (qui ne compte alors plus dans le load). Un manque de RAM gonfle le load via le SWAP : pages déplacées vers le disque → process bloqués en D-state sur cette I/O. Manque de RAM = I/O de swap.
+Comment lire la ligne CPU de top ?;us = user (applicatif), sy = system (kernel), id = idle, wa = I/O wait. wa élevé + us bas = problème disque, pas CPU. C'est l'indice à ne pas rater.
+Méthode USE : c'est quoi ?;Pour chaque ressource (CPU, RAM, disque, réseau) : Utilization (taux d'occupation), Saturation (file d'attente / dépassement), Errors. Grille pour éliminer les sous-systèmes un par un au lieu de tâtonner.
+Méthode USE appliquée au disque ?;Utilization : %util d'iostat. Saturation : await / aqu-sz d'iostat, ou process en D-state. Errors : dmesg / journalctl pour les erreurs d'écriture. (df/du = espace, axe à part.)
+Premiers réflexes face à un serveur lent (méthode) ?;Dans un cluster : kubectl top node pour localiser QUEL nœud d'abord. Puis sur la machine : uptime/load average, ligne CPU de top (wa ?), Mem/Swap, iostat. Toujours confirmer le bon nœud avant de conclure.
+Fallbacks quand top/vmstat/dmesg manquent (image minimale) ?;cat /proc/loadavg (load), cat /proc/stat | grep procs_blocked (process bloqués). Sur k3s/Alpine : apk add procps. Savoir lire /proc à la main = réflexe senior.
+Pourquoi un load de 4,57 coexiste avec un CPU node à 29% ?;Le %CPU est une moyenne sur TOUS les cœurs (4 cœurs saturés sur 14 ≈ 29%). Le load compte les process en file (4 workers stress ≈ 4). Deux angles de la même réalité : occupation des cœurs vs process en attente.

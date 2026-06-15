@@ -1,0 +1,11 @@
+question;réponse
+Statut d'un pod qui dépasse sa limite CPU ?;Running, zéro restart, aucun exit code. Contrairement à la mémoire, dépasser la limite CPU ne tue pas : ça throttle. C'est le piège du diagnostic.
+Quel mécanisme kernel applique la limite CPU ?;Le CFS (Completely Fair Scheduler) du kernel Linux. Kubernetes ne fait qu'écrire un quota dans le cgroup (cpu.max en cgroup v2 : "quota période") ; c'est le kernel qui gèle le process.
+Période CFS par défaut ?;100 ms. La limite CPU est un quota de temps CPU autorisé par tranche de 100 ms.
+Que signifie une limite CPU de 200m ?;200 millicœurs = 20 ms de CPU par période de 100 ms. Une fois ces 20 ms consommés, le process est gelé jusqu'au début de la période suivante.
+Pourquoi la latence est en dents de scie sous throttling ?;Quota épuisé en début de période → process gelé le reste de la période (ex : 20ms actif, 80ms gelé). Les requêtes pendant la phase gelée attendent. Sous charge CONSTANTE, c'est le quota qui se vide/recharge cycliquement, pas la charge qui varie.
+Quelle métrique prouve le throttling (pas juste un plafonnement) ?;container_cpu_cfs_throttled_periods_total (et son ratio sur le total des périodes). Tuile "CPU Throttling" du dashboard Grafana.
+"Plafonner" vs "être throttlé" : différence ?;Plafonner = la conso atteint la limite (kubectl top), peut juste vouloir dire "n'a pas besoin de plus". Throttlé = le kernel a effectivement gelé le process car le quota était épuisé. Seule la métrique throttled_periods le prouve.
+CPU vs mémoire : pourquoi l'un throttle et l'autre tue ?;Le CPU est une ressource compressible : on peut ralentir un process sans le casser → throttling. La mémoire est non-compressible : on ne peut pas "ralentir" la RAM, soit elle est là soit non → OOMKill.
+Symptôme typique du CPU throttling en prod ?;p99 latency qui explose pendant que p50 reste correcte, ET le CPU du node n'est PAS saturé. "Lent alors que le CPU est à 40%" = signature du throttling.
+Faut-il mettre des limits CPU en prod ? (le débat);CONTRE : une limite peut throttler un process alors que le node a du CPU libre = gâchis + latence inutile. POUR : sans limite, un pod fou peut monopoliser le CPU et affamer ses voisins (pas de "blast radius"). Compromis courant : requests oui, limits CPU non (mais limits mémoire oui).

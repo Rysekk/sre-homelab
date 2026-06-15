@@ -54,7 +54,7 @@ Installe Docker, kubectl, k3d, Helm, et les outils de debug, puis monte le clust
 
 ### Mission 3 — Le serveur mystère
 **Scénario** : un serveur « rame ». Aucun APM, aucun dashboard. Tu as un shell et 5 minutes.
-**Objectif** : fais-toi générer une charge surprise (lance un stress I/O sur un node sans regarder lequel ni quoi), puis identifie la nature de la charge avec une méthode structurée — pas en essayant des commandes au hasard.
+**Objectif** : fais-toi générer une charge surprise (lance un stress I/O sur un node sans regarder lequel ni quoi), puis identifie la nature de la charge avec une méthode structurée pas en essayant des commandes au hasard.
 **Critères de réussite** : tu as identifié qu'il s'agit d'I/O (pas de CPU) en moins de 5 minutes, et tu peux nommer et dérouler la méthode que tu as suivie.
 
 **Questions de verbalisation** :
