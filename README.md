@@ -13,9 +13,9 @@ Related project: [lgtm-helm-chart](https://github.com/Rysekk/lgtm-helm-chart) �
 | # | Mission | Topic | Status |
 |---|---------|-------|--------|
 | 1 | Le pod qui meurt en silence | Linux — OOM, cgroups | ✅ |
-| 2 | Rapide mais lent | Linux — CPU throttling, CFS | 🔧 |
-| 3 | Le serveur mystère | Linux — USE method, I/O | ⬜ |
-| 4 | Tout le monde timeout | Network — DNS, NetworkPolicy | ⬜ |
+| 2 | Rapide mais lent | Linux — CPU throttling, CFS | ✅ |
+| 3 | Le serveur mystère | Linux — USE method, I/O | ✅ |
+| 4 | Tout le monde timeout | Network — DNS, NetworkPolicy | 🔧 |
 | 5 | L'autopsie des connexions | Network — TCP states | ⬜ |
 | 6 | Le chemin invisible | Network — Services, kube-proxy | ⬜ |
 | 7 | L'app saine qu'on assassine | K8s — probes, CrashLoopBackOff | ⬜ |
